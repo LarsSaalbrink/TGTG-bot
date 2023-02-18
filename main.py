@@ -58,67 +58,12 @@
 -Add interface to google maps to find the distance from home to the shop
 """
 
-#####Imports#####
-from enum import Enum
+
+
+
+from lib.shops import Shop, Bag, BagType
+from lib.web import app
 import warnings
-
-from http.server import HTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs
-
-#####Classes#####
-"""
-class BagType(Enum):
-  FRUGT_OG_GRONT: 1
-  KOD_OG_KOL: 2
-  BAGER: 3
-  DAGLIGVARER: 4
-  FROST: 5
-"""
-
-BagType = Enum('Color', ['FRUGT_OG_GRONT', 'KOD_OG_KOL', 'BAGER', 'DAGLIGVARER', 'FROST'])
-
-class Bag:
-    def __init__(self, type, price, releaseTime, pickupTimespan):
-        self.type = type  #BagType(Enum)
-        self.price = price
-        self.releaseTime = releaseTime
-        self.pickupTimespan = pickupTimespan
-
-        #Read from file if entry exists, else set to 0 and
-        #create entry in file
-        self.orderCountHistory = 0
-
-class Shop:
-    def __init__(self, chainName, bagsAvailable, distanceFromHome):
-        self.chainName = chainName
-        self.bagsAvailable = bagsAvailable   #Bag class
-        self.distanceFromHome = distanceFromHome
-
-#Some kind of secutiry to prevent random people injecting unsupported / malicious orders would be great
-class RequestHandler(BaseHTTPRequestHandler):
-    def do_GET(self):                                              #Get request from frontend
-        self.send_response(200)                                    #HTTP 200 = OK
-        
-        #Retrieve the html page
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-        with open("index.html", "r") as file:
-            self.wfile.write(bytes(file.read(), "utf8"))
-
-    def do_POST(self):                                             #Post containing data from frontend
-        content_length = int(self.headers['Content-Length'])           #Get length of data
-        self.data = self.rfile.read(content_length)                    #Read data
-
-        print("Received message:")
-        print(self.data)                                               #Print data (for debugging
-
-        self.send_response(200)                                        #HTTP 200 = OK. Tell frontend that data was received
-        self.send_header("Content-type", "text/plain")
-        self.end_headers()
-        self.wfile.write(bytes("Message received", "utf8"))
-
-#####Functions#####
-
 
 def main():
     print('Mojn')
@@ -141,8 +86,7 @@ def main():
                                         0.9)
 
 
-    httpd = HTTPServer(('localhost', 8000), RequestHandler)
-    httpd.serve_forever()
+    app.run()
 
     ###Loop###
     #while(1):
