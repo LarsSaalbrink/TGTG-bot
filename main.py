@@ -62,10 +62,15 @@
 
 
 from lib.shops import Shop, Bag, BagType
-from lib.web import app
+from lib.web import app, App
 import warnings
+import threading
 
 def main():
+    #Start the webserver on a new thread
+    #threading.Thread(target=app.run(use_reloader=False))
+    threading.Thread(target=lambda: app.run(use_reloader=False)).start()  #host=localhost, port=5000
+
     print('Mojn')
     warnings.warn('\nWarning...........orderCountHistory of Bag class not in use\n')
 
@@ -85,8 +90,12 @@ def main():
                                          Bag(BagType.KOD_OG_KOL.name,29,'13:20','9:00 - 13:00')],
                                         0.9)
 
+    #ADDED DATA IS LOST AFTER RELOAD OF PAGE
 
-    app.run()
+    App.odenseShops = odenseShops
+    App.addShop('Middelfartvej 125')
+
+    
 
     ###Loop###
     #while(1):
